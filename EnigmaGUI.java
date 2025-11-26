@@ -19,10 +19,6 @@ public class EnigmaGUI extends JFrame {
     private final String[] rotorInit = {
         "1", "2", "3", "4", "5",
     };
-    
-    private final double[] cfact = {
-        1.0000, 1.0 / 12, 3.28084, 0.0328084
-    };
 
     public EnigmaGUI() {
         super();
@@ -72,22 +68,6 @@ public class EnigmaGUI extends JFrame {
     private class CoverterActionListener implements ActionListener {
 
          public void actionPerformed(ActionEvent e) {
-
-             //get the index selected in the comboboxes
-             int fIdx = innerVal.getSelectedIndex();
-             int tIdx = outVal.getSelectedIndex();
-
-             //retrieve the from value as a double
-             double fVal = Double.parseDouble(toValue.getText());
-
-             //first convert from value to feet and then divde by the
-             //convert to units
-             double tVal = (fVal * cfact[fIdx]) / cfact[tIdx];
-              
-             //round to 3 decimal places
-             tVal = Math.round(tVal * 1000.0) / 1000.0;
-             
-             toValue.setText("" + tVal); //set the toValue text field
          }
     }
 }
