@@ -7,7 +7,7 @@ public class EnigmaGUI extends JFrame {
     private JComboBox<String> innerVal;
     private JComboBox<String> middleVal;
     private JComboBox<String> outVal;
-    private JTextField toValue;
+    private JTextField startValue;
 
     private JButton button;
     private JButton button1;
@@ -23,7 +23,7 @@ public class EnigmaGUI extends JFrame {
     public EnigmaGUI() {
         super();
 
-        toValue = new JTextField("EST", 10);
+        startValue = new JTextField("EST", 10);
         innerVal = new JComboBox<String>(rotorInit); //dropdown options of from/to
         middleVal   = new JComboBox<String>(rotorInit);
         outVal = new JComboBox<String>(rotorInit);
@@ -32,10 +32,9 @@ public class EnigmaGUI extends JFrame {
         text = new JTextArea(5,35);
         text1 = new JTextArea(5,35);
 
-        //toValue.setEditable(true); //do not let the result be edited
-
         // Create panel with flow layout and add GUI elements
-        JPanel dpanel = new JPanel(new FlowLayout()); 
+        JPanel dpanel = new JPanel(new FlowLayout());
+
         dpanel.add(new JLabel("Inner"));
         dpanel.add(innerVal);
         dpanel.add(new JLabel("Middle"));
@@ -43,20 +42,28 @@ public class EnigmaGUI extends JFrame {
         dpanel.add(new JLabel("Out"));
         dpanel.add(outVal);
         dpanel.add(new JLabel("Initial Positions"));
-        dpanel.add(toValue);
+        dpanel.add(startValue);
         dpanel.add(button, BorderLayout.SOUTH);
         dpanel.add(button1, BorderLayout.SOUTH);
-        dpanel.add(new JLabel("Input"));
-        dpanel.add(text);
-        dpanel.add(new JLabel("Output"));
-        dpanel.add(text1);
+
+        //Layout the text areas
+        JPanel layPanel = new JPanel();
+        layPanel.setLayout(new GridLayout(2, 2, 2, 2));
+
+        layPanel.add(new JLabel("Input"));
+        layPanel.add(text);
+
+        layPanel.add(new JLabel("Output"));
+        layPanel.add(text1);
+        text1.setEditable(false);
+
+        add(layPanel, BorderLayout.SOUTH);
 
         //add the same action listener for all
         CoverterActionListener a = new CoverterActionListener();
-        
-        innerVal.addActionListener(a); //change the number in from (when enter is hit)
-        middleVal.addActionListener(a);//change the to units
-        outVal.addActionListener(a); //change the from units
+
+        button.addActionListener(a);
+        button1.addActionListener(a);
             
         
         this.add(dpanel);
@@ -64,10 +71,32 @@ public class EnigmaGUI extends JFrame {
         this.pack();
     }
 
+
+
     //use a private, inner class to handle events
     private class CoverterActionListener implements ActionListener {
 
          public void actionPerformed(ActionEvent e) {
-         }
+
+            // Get rotor numbers
+            int r1 = innerVal.getSelectedIndex();
+            int r2 = middleVal.getSelectedIndex();
+            int r3 = outVal.getSelectedIndex();
+
+            String start = startValue.getText();
+            String input = text.getText();
+            Enigma eng = new Enigma(r1, r2, r3, start);
+            String result; 
+
+            //e.getSource() I found from google to check for multiple buttons.
+            if ((e.getSource() == button) == true) {
+                result = eng.encrypt(input);
+            } else {
+                result = eng.decrypt(input);
+            }
+            
+            // Send to output box
+            text1.setText(result);
+        }
     }
 }
