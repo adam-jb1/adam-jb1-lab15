@@ -94,7 +94,7 @@ public class EnigmaGUI extends JFrame {
             } else {
                 result = eng.decrypt(input);
             }
-            
+
             // Send to output box
             text1.setText(result);
         }
